@@ -6,6 +6,7 @@ const cors = require('cors')
 // require route files
 const exampleRoutes = require('./app/routes/example_routes')
 const userRoutes = require('./app/routes/user_routes')
+const adminRoutes = require('./app/routes/admin_routes')
 
 // require middleware
 const errorHandler = require('./lib/error_handler')
@@ -35,6 +36,7 @@ mongoose.connect(db, {
 // instantiate express application object
 const app = express()
 
+
 // set CORS headers on response from this API using the `cors` NPM package
 // `CLIENT_ORIGIN` is an environment variable that will be set on Heroku
 app.use(cors({ origin: process.env.CLIENT_ORIGIN || `http://localhost:${clientDevPort}` }))
@@ -44,13 +46,13 @@ const port = process.env.PORT || serverDevPort
 
 // register passport authentication middleware
 app.use(auth)
-
+app.use('/admin', adminRoutes)
 // add `express.json` middleware which will parse JSON requests into
 // JS objects before they reach the route files.
 // The method `.use` sets up middleware for the Express application
 app.use(express.json())
 // this parses requests sent by `$.ajax`, which use a different content type
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: false }))
 
 // log each request as it comes in for debugging
 app.use(requestLogger)
